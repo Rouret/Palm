@@ -1,0 +1,3 @@
+- [ ] V0.0.1
+    - [ ] Add ionic to project
+    - [ ] Add Database
