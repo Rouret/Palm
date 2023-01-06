@@ -3,9 +3,11 @@
     "version": "0.0.1",
     "description": "MMORPG from scratch. Alone.",
     "scripts": {
-        "start:dev": "webpack --watch && ts-node src/backend/bootstrap.ts",
-        "build": "rimraf ./build && tsc",
-        "start:prod": "npm run build && node build/index.js"
+        "start:dev": "webpack --watch && ts-node src/backend/bootstrap.ts ",
+        "start:client": "electron ./dist/index.html --dev",
+        "start:prod": "npm run build && node build/index.js",
+        "build:server": "rimraf ./build && tsc",
+        "build:client": "electron-packager dist Palm --platform=win32 --arch=x64 --out=build --overwrite"
     },
     "keywords": [],
     "author": "Rouret Lucas",
@@ -13,6 +15,8 @@
     "devDependencies": {
         "@types/express": "^4.17.15",
         "@types/node": "^18.11.18",
+        "electron": "^22.0.0",
+        "electron-packager": "^17.1.1",
         "nodemon": "^2.0.20",
         "nodemon-webpack-plugin": "^4.8.1",
         "rimraf": "^3.0.2",
@@ -21,7 +25,10 @@
     },
     "dependencies": {
         "copy-webpack-plugin": "^11.0.0",
+        "dotenv": "^16.0.3",
         "express": "^4.18.2",
+        "pg": "^8.8.0",
+        "postgres": "^3.3.3",
         "socket.io": "^4.5.4",
         "socket.io-client": "^4.5.4",
         "ts-loader": "^9.4.2",

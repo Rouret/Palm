@@ -1,0 +1,10 @@
+version: "3"
+services:
+  db:
+    image: postgres:latest
+    environment:
+      - POSTGRES_DB=palm
+      - POSTGRES_USER=palm
+      - POSTGRES_PASSWORD=palm
+    ports:
+      - "5432:5432"

@@ -32,7 +32,6 @@ MMORPG from scratch. Alone. By Rouret Lucas.
 
 See versioning [here](./docs/VERSIONING.md).
 
-
 <!-- CONTRIBUTING -->
 
 ## Contributeurs

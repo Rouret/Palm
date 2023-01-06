@@ -1,5 +1,5 @@
 import io from "socket.io-client";
-const socket = io();
+const socket = io("ws://localhost:3000");
 const gameSettings = {
 	fps: 60,
 	timePerTick: 0, //calculated in init
