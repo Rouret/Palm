@@ -1,6 +1,7 @@
 version: "3"
 services:
-  db:
+  palm-db:
+    container_name: palm-db
     image: postgres:latest
     environment:
       - POSTGRES_DB=palm

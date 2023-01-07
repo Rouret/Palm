@@ -1,61 +1,44 @@
-import express from "express";
-import path from "path";
-import http from "http";
-import {Server, Socket} from "socket.io";
-import {Pool} from "pg";
+import ApiManager from "./managers/ApiManager";
+import SocketManager from "./managers/SocketManager";
+import DbManager from "./managers/DbManager";
+import {Mode} from "./utils/Mode";
+import {Logger} from "log4js";
 
-export default class GameServer {
-	app: express.Application;
-    server: http.Server;
-	io: Server;
-    db : Pool;
+export default class GameServer{
+    public static instance: GameServer;
+	api : ApiManager
+	io: SocketManager;
+    db : DbManager;
 	port: number;
-    publicFolder: string;
-    viewsFolder: string;
+    mode: Mode;
+    logger: Logger;
 
-    constructor() {
-        this.app = express();
-        this.server = http.createServer(this.app);
-        this.io = new Server(this.server);
-        this.db = new Pool()
-        this.port = 3000;
-        this.publicFolder = "../../dist";
-        this.viewsFolder = "../../views";
+    constructor(logger: Logger) {
+        this.logger = logger;
+        this.mode = Mode[process.env.mode || "development"] as Mode;
+        this.api = new ApiManager();
+        this.io = new SocketManager(this.api.server);
+        this.db = new DbManager()
+        GameServer.instance = this;
+
     }
 
-	_setupExpress() {
-        this.app.use(express.static(path.join(__dirname, this.publicFolder)));
-
-        this.app.get("/", (req : any, res: any) => {
-            res.sendFile(path.join(__dirname, this.viewsFolder, "index.html"));
-        });
-    }
-
-	_setupSocket() {
-        this.io.on("connection", (socket: Socket) => {
-			console.log(`Player connected: ${socket.id}.`);
-            socket.on("init", (data : any) => {
-                socket.emit("welcome", {
-                    message:"Welcome to the game!"
-                });
-            });
-
-            socket.on("disconnect", () => {
-                console.log(
-                    `Player disconnected: ${socket.id}.`
-                );
-            });
-        });
+    log(message: string, level = "info") {
+        this.logger.log(level,message);
     }
 
 	public start() {
-		this._setupExpress();
+        try {
+            this.api.start();
+            this.io.start();
+            this.db.start();
+        }
+        catch (e) {
+            this.api.stop();
+            this.io.stop();
+            this.db.stop();
+        }
 
-		this._setupSocket();
-
-		this.server.listen(this.port, () => {
-            console.log(`listening on *:${this.port}`);
-        });
-		console.log("GameServer started");
 	}
+
 }

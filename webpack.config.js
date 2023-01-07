@@ -20,7 +20,7 @@ module.exports = {
                 { from: path.resolve('./views/index.html'), to: path.resolve('./dist/index.html'), force: true },
                 { from: path.resolve('./package.json'), to: path.resolve('./dist/package.json'), force: true }
             ],
-        }),
+        })
     ],
     module: {
         rules: [{
