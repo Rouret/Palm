@@ -4,6 +4,7 @@ import http from "http";
 import path from "path";
 import GameServer from "../GameServer";
 import DbManager from "./DbManager";
+import {User} from "../entities/User";
 
 export default class ApiManager implements IManager {
     public app: express.Application;
@@ -22,6 +23,13 @@ export default class ApiManager implements IManager {
         this.app.get("/", (req : Request, res: Response) => {
             res.send("Hello World!");
             // create a new player
+            const user = new User();
+            user.username = "test";
+            user.password = "test";
+            user.lastLogin = new Date();
+            DbManager.instance.em().persistAndFlush(user).then(() => {
+                GameServer.instance.log("User created");
+            });
 
         });
 
