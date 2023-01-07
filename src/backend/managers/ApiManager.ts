@@ -3,9 +3,10 @@ import express, {Request,Response} from "express";
 import http from "http";
 import path from "path";
 import GameServer from "../GameServer";
+import DbManager from "./DbManager";
 
 export default class ApiManager implements IManager {
-    public  app: express.Application;
+    public app: express.Application;
     public server: http.Server;
     public publicFolder: string;
     public port: number;
@@ -20,6 +21,8 @@ export default class ApiManager implements IManager {
     start(): void {
         this.app.get("/", (req : Request, res: Response) => {
             res.send("Hello World!");
+            // create a new player
+
         });
 
         this.server.listen(this.port, () => {
