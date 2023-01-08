@@ -7,10 +7,12 @@ import {StatType} from "./StatType";
 export class PlayerStat extends CustomBaseEntity {
     @ManyToOne()
     player!: Player;
-
     @Property()
     value!: number;
-
     @Property()
     type!: StatType;
+
+    increaseValue(value: number) {
+        this.value += value;
+    }
 }

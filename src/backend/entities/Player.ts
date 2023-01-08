@@ -19,4 +19,15 @@ export class Player extends CustomBaseEntity {
         x!: number;
         @Property()
         y!: number;
+
+        move(x: number, y: number) {
+            this.x = x;
+            this.y = y;
+        }
+        changeTile(tile: Tile) {
+            this.tile = tile;
+        }
+        levelUp() {
+            this.level++;
+        }
 }
