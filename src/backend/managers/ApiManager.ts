@@ -1,5 +1,5 @@
 import IManager from "./IManager";
-import express, {Request,Response} from "express";
+import express, {NextFunction, Request, Response} from "express";
 import http from "http";
 import path from "path";
 import GameServer from "../GameServer";
@@ -12,18 +12,21 @@ import {User} from "../entities/User";
 export default class ApiManager implements IManager {
     public app: express.Application;
     public server: http.Server;
-    public publicFolder: string;
     public port: number;
+    static PUBLIC_ROUTES = [
+        "/auth/signin",
+        "/auth/signup",
+        "/"
+    ]
 
     constructor() {
         this.app = express();
         this.server = http.createServer(this.app);
-        this.publicFolder = path.resolve(__dirname, "../../dist");
         this.port = 3000;
     }
 
-    checkSession(req: Request, res: Response, next: Function) {
-        if (req.path === "/auth/signin" || req.path === "/auth/signup") {
+    checkSession(req: Request, res: Response, next: NextFunction) {
+        if (ApiManager.PUBLIC_ROUTES.includes(req.path) || req.path.includes("/public")) {
             next()
             return
         }
@@ -32,7 +35,6 @@ export default class ApiManager implements IManager {
             next();
             return;
         }
-        console.log(JSON.stringify(GameServer.instance.sessions))
         const session = GameServer.instance.sessions.find(s => s.uuid === sessionToken);
         if (!session || session.isExpired()) {
             res.status(401).end();
@@ -47,6 +49,12 @@ export default class ApiManager implements IManager {
         this.app.use(cookieParser())
         this.app.use(this.checkSession);
 
+        //Public folder
+        this.app.use('/public',express.static(path.join(__dirname, "../../../dist")));
+
+        this.app.get("/", (req, res) => {
+            res.sendFile("dist/index.html", { root: path.resolve(__dirname, "../../../") });
+        });
         this.app.post("/auth/signup", this._signUp);
         this.app.post("/auth/signin", this._signIn);
 
@@ -117,7 +125,10 @@ export default class ApiManager implements IManager {
             res.cookie(Session.COOKIE_NAME, session.uuid, { expires: session.expiresAt })
             res.end()
         }).catch(error => {
-            res.status(500).end()
+            res
+                .status(500)
+                .json({ error: error.message })
+                .end()
         });
     }
 }

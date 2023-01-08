@@ -5,6 +5,7 @@
     <meta charset='utf-8'>
     <meta http-equiv='X-UA-Compatible' content='IE=edge'>
     <title>Palm MMO RPG</title>
+    <link href="public/assets/logo.png" rel="icon" type="image/png"/>
     <meta name='viewport' content='width=device-width, initial-scale=1'>
 </head>
 
@@ -15,10 +16,95 @@
             padding: 0;
             box-sizing: border-box;
         }
+
+        body{
+            background-color: rgb(50, 50, 50, 0.6);
+        }
+        .box {
+            background: #f2f2f2;
+            overflow: hidden;
+            border-radius: 20px;
+            box-shadow: 0 0 5px 5px #d0d0d0;
+            padding: 40px;
+            font-family: 'Merriweather', serif;
+            text-align: justify;
+            color: black;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px 20px;
+            margin: 8px 0;
+            display: inline-block;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        button {
+            width: 100%;
+            background-color: rgb(229, 91, 17);
+            color: white;
+            padding: 14px 20px;
+            margin: 8px 0;
+            border: none;
+            border-radius: 4px;
+        }
+
+        .page {
+            left: 0;
+            right: 0;
+            top: 0;
+            bottom: 0;
+            position: absolute;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            flex-direction: row;
+        }
+
+        .mb-2 {
+            margin-bottom: 20px;
+        }
+
+        .center {
+            align-items: center;
+        }
+
+        .content {
+            display: flex;
+            flex-direction: column;
+        }
+
     </style>
+
+    <div id="signin" class="page">
+        <div class="box center content">
+            <img alt="logo" class="mb-2" height="160" src="public/assets/logo.png" width="160">
+            <h1>Palm</h1>
+            <span class="mb-2">By <a href="https://github.com/rouret" target="_blank">Lucas Rouret</a> and <a href="https://github.com/tanguymossion" target="_blank">Tanguy Mossion</a></span>
+            <input autocomplete="off" id="signin-username" placeholder="Username" type="text">
+            <input autocomplete="off" id="signin-password" placeholder="Password" type="password">
+            <p>Want to create an account? <a href="#" id="launch-signup">Click here</a></p>
+            <button id="signin-button">Sign In</button>
+        </div>
+    </div>
+
+    <div id="signup" class="page">
+        <div class="box center content" >
+            <img alt="logo" class="mb-2" height="160" src="public/assets/logo.png" width="160">
+            <h1>Welcome to Palm</h1>
+            <span class="mb-2">By <a href="https://github.com/rouret" target="_blank">Lucas Rouret</a> and <a href="https://github.com/tanguymossion" target="_blank">Tanguy Mossion</a></span>
+            <input autocomplete="off" id="signup-username" placeholder="Username" type="text">
+            <input autocomplete="off" id="signup-password" placeholder="Password" type="password">
+            <p>Already have an account? <a href="#" id="launch-signin">Click here</a></p>
+            <button id="signup-button">Sign Up</button>
+        </div>
+    </div>
     <canvas id="app"></canvas>
-    <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
-    <script src="index.js"></script>
+    <script src="public/index.js"></script>
 </body>
 
 </html>
