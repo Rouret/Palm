@@ -2,7 +2,6 @@ import GameServer from './GameServer';
 import * as dotenv from 'dotenv'
 import log4js from "log4js";
 import path from "path";
-import { MikroORM, PostgreSqlDriver } from '@mikro-orm/postgresql';
 
 //DOTENV
 dotenv.config()
