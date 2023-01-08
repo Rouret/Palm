@@ -1,15 +1,19 @@
 import IManager from "./IManager";
 import http from "http";
-import {Socket} from "socket.io";
+import {Socket,Server} from "socket.io";
 import GameServer from "../GameServer";
 
 
 export default class SocketManager implements IManager {
 
-    io: http.Server;
+    io: Server;
 
-    constructor(io: http.Server) {
-        this.io = io;
+    constructor() {
+        this.io = new Server(3001, {
+            cors: {
+                origin: "*",
+            },
+        });
     }
 
     start(): void {

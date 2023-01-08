@@ -18,7 +18,7 @@ export default class GameServer{
         this.logger = logger;
         this.mode = Mode[process.env.mode || "development"] as Mode;
         this.api = new ApiManager();
-        this.io = new SocketManager(this.api.server);
+        this.io = new SocketManager();
         this.db = new DbManager()
         GameServer.instance = this;
     }
