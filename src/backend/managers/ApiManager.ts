@@ -6,9 +6,11 @@ import GameServer from "../GameServer";
 import cookieParser from "cookie-parser";
 import uuid from "uuid";
 import Session from "../utils/Session";
+import DbManager from "./DbManager";
+import {User} from "../entities/User";
 
 export default class ApiManager implements IManager {
-    public  app: express.Application;
+    public app: express.Application;
     public server: http.Server;
     public publicFolder: string;
     public port: number;
@@ -45,26 +47,8 @@ export default class ApiManager implements IManager {
 
         });
 
-        this.app.post("/auth/signin", (req : Request, res: Response) => {
-            const { username, password } = req.body
-
-            if (!username) {
-                // If the username isn't present, return an HTTP unauthorized code
-                res.status(401).end()
-                return
-            }
-
-            const isGoodPassword = true;
-            if (!isGoodPassword) {
-                res.status(401).end()
-                return
-            }
-
-            const session = new Session(username)
-            GameServer.instance.sessions.push(session)
-            res.cookie("session_token", session.uuid, { expires: session.expiresAt })
-            res.end()
-        });
+        this.app.post("/auth/signup", this.signUp);
+        this.app.post("/auth/signin", this.signIn);
 
         this.server.listen(this.port, () => {
             GameServer.instance.log(`API started on port ${this.port}`);
@@ -72,5 +56,44 @@ export default class ApiManager implements IManager {
     }
     stop(): void {
         this.server.close();
+    }
+
+    signUp(req: Request, res: Response) {
+        const { username, password } = req.body
+
+        if (!username || !password) {
+            res.status(400).end()
+            return
+        }
+
+        const user = new User(username, password)
+        DbManager.instance.em().persistAndFlush(user).then(() => {
+            res.end()
+        }).catch(error => {
+            res.status(500).end()
+        })
+    }
+
+    signIn(req: Request, res: Response) {
+        const { username, password } = req.body
+
+        DbManager.instance.em().findOne(User, { username }).then(user => {
+            if (!user) {
+                res.status(401).end()
+                return
+            }
+
+            if (user.password !== password) {
+                res.status(401).end()
+                return
+            }
+
+            const session = new Session(user.uuid)
+            GameServer.instance.sessions.push(session)
+            res.cookie("session_token", session.uuid, { expires: session.expiresAt })
+            res.end()
+        }).catch(error => {
+            res.status(500).end()
+        });
     }
 }

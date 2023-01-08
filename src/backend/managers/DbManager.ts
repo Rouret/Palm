@@ -1,26 +1,35 @@
 import IManager from "./IManager";
-import {Pool} from "pg";
 import GameServer from "../GameServer";
-
+import {MikroORM, PostgreSqlDriver, EntityManager} from "@mikro-orm/postgresql";
+import config from "../../mikro-orm.config";
 export default class DbManager implements IManager {
-    connexion : Pool;
+    public static instance: DbManager;
+    public orm: MikroORM ;
+    public em = (): EntityManager => {
+        return this.orm.em;
+    }
 
     constructor() {
-        //Parameters config in env
-        this.connexion = new Pool();
+        DbManager.instance = this;
     }
     start(): void {
-        //Check connexion
-        this.connexion.query("SELECT NOW() as now")
-            .then(() => {
-                GameServer.instance.log("Database connected");
-            })
-            .catch((err) => {
-                this.stop();
-                throw err;
-            })
+        this.initORM().then(orm => {
+            this.orm = orm;
+            GameServer.instance.log("Database connected");
+        }).catch(
+            error => {
+                GameServer.instance.log(error, "error");
+                throw error;
+            }
+        );
     }
     stop(): void {
-        this.connexion.end();
+        this.orm.close().then(() => {
+            GameServer.instance.log("Database disconnected");
+        });
+    }
+
+    async initORM(): Promise<MikroORM> {
+        return await MikroORM.init<PostgreSqlDriver>(config);
     }
 }
