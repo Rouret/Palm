@@ -59,7 +59,7 @@
             position: absolute;
             width: 100vw;
             height: 100vh;
-            display: flex;
+            display: none;
             justify-content: space-around;
             align-items: center;
             flex-direction: row;
@@ -101,6 +101,12 @@
             <input autocomplete="off" id="signup-password" placeholder="Password" type="password">
             <p>Already have an account? <a href="#" id="launch-signin">Click here</a></p>
             <button id="signup-button">Sign Up</button>
+        </div>
+    </div>
+    <div id="loading" class="page">
+        <div class="box center content" >
+            <img alt="logo" class="mb-2" height="160" src="public/assets/logo.png" width="160">
+            <h1>Loading ...</h1>
         </div>
     </div>
     <canvas id="app"></canvas>

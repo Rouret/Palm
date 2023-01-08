@@ -5,9 +5,11 @@ export default class Client{
     elApp = document.getElementById("app");
     elSignIn = document.getElementById("signin");
     elSignUp = document.getElementById("signup");
+    elLoading = document.getElementById("loading");
 
 
     constructor() {
+        this._startLoading()
         this.socket = io();
         this._initSocket();
     }
@@ -51,6 +53,7 @@ export default class Client{
          this.elSignIn.style.display = "flex";
          this.elApp.style.display  = "none";
          this.elSignUp.style.display = "none";
+         this.elLoading.style.display = "none";
      }
 
     private _startSignUp(){
@@ -58,15 +61,55 @@ export default class Client{
             .addEventListener("click", () => {
                 this._startSignIn();
             })
+
+        document.getElementById("signup-button")
+            .addEventListener("click", () => {
+                const username = (document.getElementById("signup-username") as HTMLInputElement).value;
+                const password = (document.getElementById("signup-password") as HTMLInputElement).value;
+
+                if(!username || !password){
+                    alert("Please enter a username and password");
+                    return;
+                }
+                fetch("http://localhost:3000/auth/signup", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        username,
+                        password
+                    })
+                }).then((res) => {
+                    if(res.status === 201){
+                        alert("Completed. Please sign in");
+                        this._startSignIn();
+                    }else{
+                        alert("Unknown error");
+                    }
+                }).catch((err) => {
+                    console.error(err);
+                    alert("Unknown error");
+                })
+            })
         this.elSignUp.style.display = "flex";
         this.elSignIn.style.display = "none";
         this.elApp.style.display  = "none";
+        this.elLoading.style.display = "none";
     }
 
     private _startApp(){
         this.elApp.style.display  = "block";
         this.elSignUp.style.display = "none";
         this.elSignIn.style.display = "none";
+        this.elLoading.style.display = "none";
+    }
+
+    private _startLoading(){
+        this.elApp.style.display  = "none";
+        this.elSignUp.style.display = "none";
+        this.elSignIn.style.display = "none";
+        this.elLoading.style.display = "flex";
     }
 
     private _initSocket(){
