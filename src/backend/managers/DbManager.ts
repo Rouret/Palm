@@ -1,8 +1,9 @@
 import IManager from "./IManager";
 import GameServer from "../GameServer";
-import {MikroORM, PostgreSqlDriver, EntityManager } from "@mikro-orm/postgresql";
+import {MikroORM, PostgreSqlDriver, EntityManager} from "@mikro-orm/postgresql";
 import {RequestContext} from "@mikro-orm/core";
 import express from "express";
+import config from "../../mikro-orm.config";
 export default class DbManager implements IManager {
     public static instance: DbManager;
     public orm: MikroORM ;
@@ -14,17 +15,7 @@ export default class DbManager implements IManager {
         DbManager.instance = this;
     }
     start(): void {
-        MikroORM.init<PostgreSqlDriver>({
-            entities: ['./dist/backend/entities'], // path to our JS entities (dist), relative to `baseDir`
-            entitiesTs: ['./src/backend/entities'], // path to our TS entities (src), relative to `baseDir`
-            dbName: process.env.DB_DATABASE,
-            type: 'postgresql',
-            host: process.env.DB_HOST,
-            port: Number(process.env.DB_PORT),
-            user: process.env.DB_USER,
-            password: process.env.DB_PASSWORD,
-            allowGlobalContext: true,
-        }).then(orm => {
+        this.initORM().then(orm => {
             this.orm = orm;
             GameServer.instance.log("Database connected");
             const app = express();
@@ -43,5 +34,11 @@ export default class DbManager implements IManager {
         this.orm.close().then(() => {
             GameServer.instance.log("Database disconnected");
         });
+    }
+
+    async initORM(): Promise<MikroORM> {
+        console.log("initORM");
+        console.log("config", config)
+        return await MikroORM.init<PostgreSqlDriver>(config);
     }
 }
