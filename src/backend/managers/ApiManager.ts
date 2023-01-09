@@ -49,7 +49,6 @@ export default class ApiManager implements IManager {
 
             if(session.expiresAt < new Date()) {
                 DbManager.instance.em().removeAndFlush(session)
-                    .then(() => {})
                     .catch(error => {
                         GameServer.instance.log(error, "error");
                     })
@@ -154,7 +153,6 @@ export default class ApiManager implements IManager {
             DbManager.instance.em().findOne(Session, { user }).then(session => {
                 if(session) {
                     DbManager.instance.em().removeAndFlush(session)
-                        .then(() => {})
                         .catch(error => {
                             GameServer.instance.log(error, "error");
                             res

@@ -12,6 +12,7 @@ export default class Client{
         this._startLoading()
         this.socket = io();
         this._initSocket();
+
     }
 
      private _startSignIn(){
@@ -99,6 +100,7 @@ export default class Client{
     }
 
     private _startApp(){
+
         this.elApp.style.display  = "block";
         this.elSignUp.style.display = "none";
         this.elSignIn.style.display = "none";
@@ -114,14 +116,12 @@ export default class Client{
 
     private _initSocket(){
         this.socket.on("connect_error", (err) => {
+            console.error(err);
             this._startSignIn();
         })
 
         this.socket.on("connect", () => {
             this._startApp();
-            this.socket.emit("init", {
-                message:"Hello World! From the frontend!"
-            });
             this.socket.on("welcome", (messageFromServer) => {
                 console.log(messageFromServer.message);
             });

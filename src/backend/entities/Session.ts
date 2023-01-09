@@ -19,4 +19,5 @@ export class Session {
         this.expiresAt.setHours(4)
         this.expiresAt.setMinutes(0)
     }
+
 }

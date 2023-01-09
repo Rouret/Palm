@@ -3,7 +3,6 @@ import SocketManager from "./managers/SocketManager";
 import DbManager from "./managers/DbManager";
 import {Mode} from "./utils/Mode";
 import {Logger} from "log4js";
-import {Session} from "./entities/Session";
 
 
 export default class GameServer{
