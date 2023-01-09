@@ -30,7 +30,7 @@ export default class Client{
                     alert("Please enter a username and password");
                     return;
                 }
-                fetch("http://localhost:3000/auth/signin", {
+                fetch(process.env.API_URL + "/auth/signin", {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json"
@@ -72,7 +72,7 @@ export default class Client{
                     alert("Please enter a username and password");
                     return;
                 }
-                fetch("http://localhost:3000/auth/signup", {
+                fetch(process.env.API_URL+"/auth/signup", {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json"

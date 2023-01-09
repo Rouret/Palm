@@ -1,5 +1,6 @@
-const NodemonPlugin = require('nodemon-webpack-plugin'); // Ding
+const NodemonPlugin = require('nodemon-webpack-plugin');
 const CopyPlugin = require("copy-webpack-plugin");
+const Dotenv = require('dotenv-webpack');
 const path = require('path');
 module.exports = {
     mode: 'development',
@@ -9,6 +10,7 @@ module.exports = {
         filename: 'index.js',
     },
     plugins: [
+        new Dotenv(),
         new NodemonPlugin(
             {
                 watch: path.resolve('src'),
