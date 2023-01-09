@@ -4,6 +4,7 @@ import GameServer from "../GameServer";
 import http from "http";
 import DbManager from "./DbManager";
 import {Session} from "../entities/Session";
+import disconnectEvent from "../io/events/disconnectEvent";
 
 
 export default class SocketManager implements IManager {
@@ -36,11 +37,11 @@ export default class SocketManager implements IManager {
                                GameServer.instance.log(error, "error");
                            })
                        next(new Error("Session expired"))
-                   }else{
-                       next()
                        return;
                    }
-
+                   //define the session on the socket
+                    socket.data.player_id = session.user.uuid;
+                   next()
                })
                .catch(error => {
                    GameServer.instance.log(error, "error");
@@ -49,18 +50,14 @@ export default class SocketManager implements IManager {
                })
         })
         this.io.on("connection", (socket: Socket) => {
-            GameServer.instance.log(`Player connected: ${socket.id}.`);
+            GameServer.instance.log(`Player connected: ${socket.data.player_id}.`);
 
             socket.emit("welcome", {
                 message:"Welcome to the game!"
             });
 
 
-            socket.on("disconnect", () => {
-                GameServer.instance.log(
-                    `Player disconnected: ${socket.id}.`
-                );
-            });
+            socket.on("disconnect", disconnectEvent.bind(socket));
         });
 
         GameServer.instance.log("Socket started");
