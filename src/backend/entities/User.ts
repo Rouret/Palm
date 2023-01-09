@@ -3,6 +3,13 @@ import {CustomBaseEntity} from "./CustomBaseEntity";
 
 @Entity()
 export class User extends CustomBaseEntity {
+    constructor(username: string, password: string) {
+        super();
+        this.username = username;
+        this.password = password;
+        this.lastLogin = new Date();
+    }
+
     @Property()
     username!: string;
     @Property()

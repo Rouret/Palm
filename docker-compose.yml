@@ -8,4 +8,4 @@ services:
       - POSTGRES_USER=palm
       - POSTGRES_PASSWORD=palm
     ports:
-      - "5432:5432"
+      - "5555:5432"

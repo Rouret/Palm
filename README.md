@@ -18,7 +18,7 @@
 
 # About Palm
 
-MMORPG from scratch. Alone. By Rouret Lucas.
+MMORPG from scratch. By Rouret Lucas.
 
 ## Build with
 
@@ -36,6 +36,6 @@ See versioning [here](./docs/VERSIONING.md).
 
 ## Contributeurs
 
-Me.
+* [Tanguy Mossion](https://github.com/tanguymossion)
 
 
