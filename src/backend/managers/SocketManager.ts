@@ -19,11 +19,7 @@ export default class SocketManager implements IManager {
                 next(new Error("No session token"));
                 return;
             }
-            const session = GameServer.instance.sessions.find(s => s.uuid === sessionToken);
-            if (!session || session.isExpired()) {
-                next(new Error("Session expired"));
-                return;
-            }
+
             next();
         });
         this.io.on("connection", (socket: Socket) => {

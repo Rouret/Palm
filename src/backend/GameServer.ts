@@ -3,7 +3,8 @@ import SocketManager from "./managers/SocketManager";
 import DbManager from "./managers/DbManager";
 import {Mode} from "./utils/Mode";
 import {Logger} from "log4js";
-import Session from "./utils/Session";
+import {Session} from "./entities/Session";
+
 
 export default class GameServer{
     public static instance: GameServer;
@@ -12,7 +13,6 @@ export default class GameServer{
     db : DbManager;
     mode: Mode;
     logger: Logger;
-    sessions : Array<Session> = [];
 
     constructor(logger: Logger) {
         this.logger = logger;

@@ -4,7 +4,7 @@ import http from "http";
 import path from "path";
 import GameServer from "../GameServer";
 import cookieParser from "cookie-parser";
-import Session from "../utils/Session";
+import {Session} from "../entities/Session";
 import DbManager from "./DbManager";
 import bcrypt from 'bcrypt';
 import {User} from "../entities/User";
@@ -13,6 +13,7 @@ export default class ApiManager implements IManager {
     public app: express.Application;
     public server: http.Server;
     public port: number;
+    public publicFolder = path.join(__dirname, "../../../dist");
     static PUBLIC_ROUTES = [
         "/auth/signin",
         "/auth/signup",
@@ -35,13 +36,38 @@ export default class ApiManager implements IManager {
             next();
             return;
         }
-        const session = GameServer.instance.sessions.find(s => s.uuid === sessionToken);
-        if (!session || session.isExpired()) {
-            res.status(401).end();
-            return;
-        }
+        DbManager.instance.em()
+            .findOne(Session, { uuid: sessionToken } )
+            .then((session) => {
+            if (!session) {
+                res
+                    .status(401)
+                    .json({ message: "Invalid session" })
+                    .end()
+                return
+            }
 
-        next();
+            if(session.expiresAt < new Date()) {
+                DbManager.instance.em().removeAndFlush(session)
+                    .then(() => {})
+                    .catch(error => {
+                        GameServer.instance.log(error, "error");
+                    })
+                res
+                    .status(440)
+                    .json({ message: "Session expired" })
+                    .end()
+                return
+            }
+            next()
+        }).catch(error => {
+            GameServer.instance.log(error, "error");
+            res
+                .status(500)
+                .json({ error: error.message })
+                .end()
+        })
+
     }
 
     start(): void {
@@ -50,10 +76,13 @@ export default class ApiManager implements IManager {
         this.app.use(this.checkSession);
 
         //Public folder
-        this.app.use('/public',express.static(path.join(__dirname, "../../../dist")));
+        this.app.use('/public',express.static(this.publicFolder));
 
         this.app.get("/", (req, res) => {
-            res.sendFile("dist/index.html", { root: path.resolve(__dirname, "../../../") });
+            res.sendFile("index.html", { root: this.publicFolder });
+        });
+        this.app.get("/test", (req, res) => {
+            res.send("Hello world!");
         });
         this.app.post("/auth/signup", this._signUp);
         this.app.post("/auth/signin", this._signIn);
@@ -68,7 +97,7 @@ export default class ApiManager implements IManager {
 
     private _signUp(req: Request, res: Response) {
         const { username, password } = req.body
-
+        //Check if user and password are provided
         if (!username || !password) {
             res
                 .status(400)
@@ -76,8 +105,8 @@ export default class ApiManager implements IManager {
                 .end()
             return
         }
-
         DbManager.instance.em().findOne(User, { username }).then(user => {
+            //User already exists
             if (user) {
                 res
                     .status(409)
@@ -85,6 +114,7 @@ export default class ApiManager implements IManager {
                     .end()
                 return
             }
+            //Create user
             const newUser = new User(username,bcrypt.hashSync(password, 10));
             DbManager.instance.em().persistAndFlush(newUser).then(() => {
                 res
@@ -104,6 +134,7 @@ export default class ApiManager implements IManager {
     private _signIn(req: Request, res: Response) {
         const { username, password } = req.body
         DbManager.instance.em().findOne(User, { username }).then(user => {
+            //User not found
             if (!user) {
                 res
                     .status(401)
@@ -111,7 +142,7 @@ export default class ApiManager implements IManager {
                     .end()
                 return
             }
-
+            //Password check
             if (!bcrypt.compareSync(password, user.password)) {
                 res
                     .status(401)
@@ -119,11 +150,31 @@ export default class ApiManager implements IManager {
                     .end()
                 return
             }
+            //Session
+            DbManager.instance.em().findOne(Session, { user }).then(session => {
+                if(session) {
+                    DbManager.instance.em().removeAndFlush(session)
+                        .then(() => {})
+                        .catch(error => {
+                            GameServer.instance.log(error, "error");
+                            res
+                                .status(500)
+                                .json({error: error.message})
+                                .end()
+                        })
+                }
+                const newSession = new Session(user);
+                DbManager.instance.em().persistAndFlush(newSession).then(() => {
+                    res
+                        .cookie(Session.COOKIE_NAME, newSession.uuid)
+                        .status(200)
+                        .json({ message: "User logged in" })
+                        .end()
+                })
 
-            const session = new Session(user.uuid)
-            GameServer.instance.sessions.push(session)
-            res.cookie(Session.COOKIE_NAME, session.uuid, { expires: session.expiresAt })
-            res.end()
+            })
+
+
         }).catch(error => {
             res
                 .status(500)
