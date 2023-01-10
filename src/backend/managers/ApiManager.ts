@@ -114,17 +114,17 @@ export default class ApiManager implements IManager {
     }
 
     private async _signUp(req: Request, res: Response) {
-        const {username, password} = req.body
+        const {username, email, password} = req.body
         //Check if user and password are provided
-        if (!username || !password) {
+        if (!username || !email || !password) {
             res
                 .status(400)
-                .json({message: "Username and password are required"})
+                .json({message: "Username, email and password are required"})
                 .end()
             return
         }
         try {
-            const user = await DbManager.instance.em().findOne(User, {username})
+            const user = await DbManager.instance.em().findOne(User, { $or: [{ username }, { email }] });
             //User already exists
             if (user) {
                 res
@@ -134,7 +134,7 @@ export default class ApiManager implements IManager {
                 return
             }
             //Create user
-            const newUser = new User(username, bcrypt.hashSync(password, 10));
+            const newUser = new User(email, username, bcrypt.hashSync(password, 10));
             await DbManager.instance.em().persistAndFlush(newUser)
             res
                 .status(201)
@@ -152,9 +152,9 @@ export default class ApiManager implements IManager {
     }
 
     private async _signIn(req: Request, res: Response) {
-        const { username, password } = req.body
+        const { email, password } = req.body
 
-        if (!username || !password) {
+        if (!email || !password) {
             res
                 .status(400)
                 .json({message: "Username and password are required"})
@@ -162,12 +162,12 @@ export default class ApiManager implements IManager {
             return
         }
         try {
-            const user = await DbManager.instance.em().findOne(User, { username });
+            const user = await DbManager.instance.em().findOne(User, { email });
 
             if (!user) {
                 res
                     .status(401)
-                    .json({ message: "Invalid username or password" })
+                    .json({ message: "Invalid email or password" })
                     .end()
                 return
             }
@@ -175,7 +175,7 @@ export default class ApiManager implements IManager {
             if (!bcrypt.compareSync(password, user.password)) {
                 res
                     .status(401)
-                    .json({ message: "Invalid username or password" })
+                    .json({ message: "Invalid email or password" })
                     .end()
                 return
             }

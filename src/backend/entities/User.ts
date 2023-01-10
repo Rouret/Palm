@@ -3,8 +3,9 @@ import {CustomBaseEntity} from "./CustomBaseEntity";
 
 @Entity()
 export class User extends CustomBaseEntity {
-    constructor(username: string, password: string) {
+    constructor(email: string, username:string, password: string) {
         super();
+        this.email = email;
         this.username = username;
         this.password = password;
         this.lastLogin = new Date();
@@ -12,6 +13,8 @@ export class User extends CustomBaseEntity {
 
     @Property()
     username!: string;
+    @Property()
+    email!: string;
     @Property({hidden: true})
     password!: string;
     @Property({ type: DateTimeType })

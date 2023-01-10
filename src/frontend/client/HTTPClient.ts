@@ -1,7 +1,7 @@
 import {User} from "../../backend/entities/User";
 
 export default class HTTPClient{
-    public async signIn(username: string, password: string) : Promise<boolean> {
+    public async signIn(email: string, password: string) : Promise<boolean> {
         try{
             const res = await fetch(process.env.API_URL + "/auth/signin", {
                 method: "POST",
@@ -9,7 +9,7 @@ export default class HTTPClient{
                     "Content-Type": "application/json"
                 },
                 body: JSON.stringify({
-                    username,
+                    email,
                     password
                 })
             })
@@ -22,7 +22,7 @@ export default class HTTPClient{
 
     }
 
-    public async signUp(username: string, password: string) : Promise<boolean> {
+    public async signUp(email: string, username: string, password: string) : Promise<boolean> {
         try {
             const res = await fetch(process.env.API_URL + "/auth/signup", {
                 method: "POST",
@@ -31,9 +31,11 @@ export default class HTTPClient{
                 },
                 body: JSON.stringify({
                     username,
-                    password
+                    password,
+                    email
                 })
             })
+            console.log(res)
             return res.status === 201;
         } catch (e) {
             console.error(e);

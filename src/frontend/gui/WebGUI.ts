@@ -49,14 +49,15 @@ export default class WebGUI implements GUI {
             .addEventListener('click', async () => {
                 const username = (document.getElementById("signup-username") as HTMLInputElement).value;
                 const password = (document.getElementById("signup-password") as HTMLInputElement).value;
+                const email = (document.getElementById("signup-email") as HTMLInputElement).value;
 
-                if(!username || !password){
-                    alert("Please enter a username and password");
+                if(!username || !email || !password){
+                    alert("Please enter a username, email and password");
                     return;
                 }
                 const isSignUp = await PalmClient.instance
                     .httpClient
-                    .signUp(username, password);
+                    .signUp(email,username, password);
 
                 if(isSignUp){
                     this._startSignIn();
@@ -68,16 +69,16 @@ export default class WebGUI implements GUI {
 
         this.buttonSignIn
             .addEventListener('click', async () => {
-                const username = (document.getElementById("signin-username") as HTMLInputElement).value;
+                const email = (document.getElementById("signin-email") as HTMLInputElement).value;
                 const password = (document.getElementById("signin-password") as HTMLInputElement).value;
 
-                if(!username || !password){
+                if(!email || !password){
                     alert("Please enter a username and password");
                     return;
                 }
                 const isSignIn = await PalmClient.instance
                     .httpClient
-                    .signIn(username, password);
+                    .signIn(email, password);
 
                 if(isSignIn){
                     accept();

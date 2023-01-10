@@ -1,12 +1,12 @@
 import {Entity, ManyToOne, Property} from "@mikro-orm/core";
 import {CustomBaseEntity} from "./CustomBaseEntity";
-import {Player} from "./Player";
+import {Character} from "./Character";
 import {StatType} from "./StatType";
 
 @Entity()
-export class PlayerStat extends CustomBaseEntity {
+export class CharacterStat extends CustomBaseEntity {
     @ManyToOne()
-    player!: Player;
+    player!: Character;
     @Property()
     value!: number;
     @Property()
