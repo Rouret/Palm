@@ -1,6 +1,7 @@
 import HTTPClient from "./client/HTTPClient";
 import {SocketClient} from "./client/SocketClient";
 import WebGUI from "./gui/WebGUI";
+import CanvasGUI from "./gui/CanvasGUI";
 
 export default class PalmClient {
 
@@ -9,11 +10,13 @@ export default class PalmClient {
     httpClient : HTTPClient;
     socketClient: SocketClient;
     webGUI : WebGUI;
+    canvasGUI : CanvasGUI;
 
     constructor() {
         this.httpClient = new HTTPClient();
         this.socketClient = new SocketClient();
         this.webGUI = new WebGUI();
+        this.canvasGUI = new CanvasGUI();
         PalmClient.instance = this;
     }
 
@@ -23,25 +26,20 @@ export default class PalmClient {
 
     async start(){
         if(await this._isSignIn()){
-            console.log("is sign in");
+            this.canvasGUI.open(() => {}, () => {});
         }else{
-            console.log("not sign in");
             this.webGUI.open(() => {
-                console.log("accept");
                 this.webGUI.close();
+                this.canvasGUI.open(() => {}, () => {});
             }, () => {
-                console.log("reject");
+                location.reload();
                 this.webGUI.close();
             });
         }
-        /*
-            1. check si on un cookie valide (HTTP REQUEST)
-            Oui->
-                On lance le CanvasGUI
-            Non->
-                1.On lance le WebGUI
-                2.en attendant l'appel du callback "accept"
-                3.on lance le CanvasGUI
-         */
+    }
+
+
+    static log(message: string, type: string = "info"){
+        console.log(`[${type.toUpperCase()}] ${message}`)
     }
 }
