@@ -13,13 +13,13 @@ export default class WebGUI implements GUI {
     private _startSignIn(){
         this.appCanvasEl.style.display  = "none";
         this.signUpSectionEl.style.display = "none";
-        this.signInSectionEl.style.display = "flex";
+        this.signInSectionEl.style.display = "block";
     }
 
     private _startSignUp(){
         this.appCanvasEl.style.display  = "none";
         this.signInSectionEl.style.display = "none";
-        this.signUpSectionEl.style.display = "flex";
+        this.signUpSectionEl.style.display = "block";
     }
 
     close(): void {
@@ -38,11 +38,11 @@ export default class WebGUI implements GUI {
         this._startSignIn();
         this.buttonGotoSignIn
             .addEventListener("click", () => {
-                this._startSignUp();
+                this._startSignIn();
             })
         this.buttonGoToSignUp
             .addEventListener("click", () => {
-                this._startSignIn();
+                this._startSignUp();
             })
 
         this.buttonSignUp
@@ -71,7 +71,6 @@ export default class WebGUI implements GUI {
                 const username = (document.getElementById("signin-username") as HTMLInputElement).value;
                 const password = (document.getElementById("signin-password") as HTMLInputElement).value;
 
-                console.log(username, password);
                 if(!username || !password){
                     alert("Please enter a username and password");
                     return;

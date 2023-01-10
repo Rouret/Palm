@@ -20,6 +20,7 @@ module.exports = {
             patterns: [
                 { from: path.resolve('./assets'), to: path.resolve('./dist/assets'), force: true },
                 { from: path.resolve('./views/index.html'), to: path.resolve('./dist/index.html'), force: true },
+                { from: path.resolve('./views/index.css'), to: path.resolve('./dist/index.css'), force: true },
             ],
         })
     ],

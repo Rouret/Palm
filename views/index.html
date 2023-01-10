@@ -4,109 +4,131 @@
 <head>
     <meta charset='utf-8'>
     <meta http-equiv='X-UA-Compatible' content='IE=edge'>
-    <title>Palm MMO RPG</title>
+    <title>Palm MMORPG</title>
     <link href="public/assets/logo.png" rel="icon" type="image/png"/>
-    <meta name='viewport' content='width=device-width, initial-scale=1'>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="/public/index.css">
+    <link href="https://fonts.googleapis.com/css?family=Lato:300,400,700,900&display=swap" rel="stylesheet">
 </head>
 
 <body>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Merriweather:wght@300;900&display=swap');
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body{
-            background-color: rgb(50, 50, 50, 0.6);
-        }
-        .box {
-            background: #f2f2f2;
-            overflow: hidden;
-            border-radius: 20px;
-            box-shadow: 0 0 5px 5px #d0d0d0;
-            padding: 40px;
-            font-family: 'Merriweather', serif;
-            text-align: justify;
-            color: black;
-        }
-
-        input {
-            width: 100%;
-            padding: 12px 20px;
-            margin: 8px 0;
-            display: inline-block;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            box-sizing: border-box;
-        }
-
-        button {
-            width: 100%;
-            background-color: rgb(229, 91, 17);
-            color: white;
-            padding: 14px 20px;
-            margin: 8px 0;
-            border: none;
-            border-radius: 4px;
-        }
-
-        .page {
-            left: 0;
-            right: 0;
-            top: 0;
-            bottom: 0;
-            position: absolute;
-            width: 100vw;
-            height: 100vh;
-            display: none;
-            justify-content: space-around;
-            align-items: center;
-            flex-direction: row;
-        }
-
-        .mb-2 {
-            margin-bottom: 20px;
-        }
-
-        .center {
-            align-items: center;
-        }
-
-        .content {
-            display: flex;
-            flex-direction: column;
-        }
-
-    </style>
-
-    <div id="signin" class="page">
-        <div class="box center content">
-            <img alt="logo" class="mb-2" height="160" src="public/assets/logo.png" width="160">
-            <h1>Palm</h1>
-            <span class="mb-2">By <a href="https://github.com/rouret" target="_blank">Lucas Rouret</a> and <a href="https://github.com/tanguymossion" target="_blank">Tanguy Mossion</a></span>
-            <input autocomplete="off" id="signin-username" placeholder="Username" type="text">
-            <input autocomplete="off" id="signin-password" placeholder="Password" type="password">
-            <p>Want to create an account? <a href="#" id="launch-signup">Click here</a></p>
-            <button id="signin-button">Sign In</button>
+<section id="signin" class="ftco-section">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-6 text-center mb-2">
+            </div>
+        </div>
+        <div class="row justify-content-center">
+            <div class="col-md-12 col-lg-10">
+                <div class="wrap d-md-flex">
+                    <div class="text-wrap p-4 p-lg-5 text-center d-flex align-items-center order-md-last">
+                        <div class="text w-100">
+                            <h2>Bienvenue sur Palm</h2>
+                            <p>Vous n'avez pas de compte ?</p>
+                            <a href="#" id="launch-signup" class="btn btn-white btn-outline-white">S'enregistrer</a>
+                        </div>
+                    </div>
+                    <div class="login-wrap p-4 p-lg-5">
+                        <div class="align-items-center text-center">
+                            <img alt="logo" class="logo mb-2" height="120" width="120" src="public/assets/logo.png">
+                            <h3 class="mb-4">Se connecter</h3>
+                        </div>
+                        <form action="#" class="signin-form">
+                            <div class="form-group mb-3">
+                                <label class="label" for="signin-username">Nom de compte</label>
+                                <input type="text" autocomplete="off" id="signin-username" class="form-control"
+                                       placeholder="Nom de compte" required>
+                            </div>
+                            <div class="form-group mb-3">
+                                <label class="label" for="signin-password">Mot de passe</label>
+                                <input type="password" autocomplete="off" id="signin-password" class="form-control"
+                                       placeholder="Mot de passe" required>
+                            </div>
+                            <div class="form-group">
+                                <button type="submit" id="signin-button"
+                                        class="form-control btn submit px-3">Se connecter
+                                </button>
+                            </div>
+                            <div class="form-group d-md-flex">
+                                <div class="w-100 text-center ">
+                                    <a href="#" class="colorhover">Mot de passe oublié</a>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="text-center">
+            <br/>
+            <span>By <a href="https://github.com/rouret" target="_blank">Lucas Rouret</a> and <a
+                    href="https://github.com/tanguymossion" target="_blank">Tanguy Mossion</a></span>
         </div>
     </div>
+</section>
 
-    <div id="signup" class="page">
-        <div class="box center content" >
-            <img alt="logo" class="mb-2" height="160" src="public/assets/logo.png" width="160">
-            <h1>Welcome to Palm</h1>
-            <span class="mb-2">By <a href="https://github.com/rouret" target="_blank">Lucas Rouret</a> and <a href="https://github.com/tanguymossion" target="_blank">Tanguy Mossion</a></span>
-            <input autocomplete="off" id="signup-username" placeholder="Username" type="text">
-            <input autocomplete="off" id="signup-password" placeholder="Password" type="password">
-            <p>Already have an account? <a href="#" id="launch-signin">Click here</a></p>
-            <button id="signup-button">Sign Up</button>
+<section id="signup" class="ftco-section">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-6 text-center mb-2">
+            </div>
+        </div>
+        <div class="row justify-content-center">
+            <div class="col-md-12 col-lg-10">
+                <div class="wrap d-md-flex">
+                    <div class="text-wrap p-4 p-lg-5 text-center d-flex align-items-center order-md-last">
+                        <div class="text w-100">
+                            <h2>Bienvenue sur Palm</h2>
+                            <p>Vous avez déjà un compte ?</p>
+                            <a href="#" id="launch-signin" class="btn btn-white btn-outline-white">Se connecter</a>
+                        </div>
+                    </div>
+                    <div class="login-wrap p-4 p-lg-5">
+                        <div class="align-items-center text-center">
+                            <img alt="logo" class="logo mb-2" height="120" width="120" src="public/assets/logo.png">
+                            <h3 class="mb-4">S'enregistrer</h3>
+                        </div>
+                        <form action="#" class="signin-form">
+                            <div class="form-group mb-3">
+                                <label class="label" for="signup-email">Email</label>
+                                <input type="text" autocomplete="off" id="signup-email" class="form-control"
+                                       placeholder="Email" required>
+                            </div>
+                            <div class="form-group mb-3">
+                                <label class="label" for="signup-username">Nom de compte</label>
+                                <input type="text" autocomplete="off" id="signup-username" class="form-control"
+                                       placeholder="Nom de compte" required>
+                            </div>
+                            <div class="form-group mb-3">
+                                <label class="label" for="signup-password">Mot de passe</label>
+                                <input type="password" autocomplete="off" id="signup-password" class="form-control"
+                                       placeholder="Mot de passe" required>
+                            </div>
+                            <div class="form-group">
+                                <button type="submit" id="signup-button"
+                                        class="form-control btn submit px-3">S'enregistrer
+                                </button>
+                            </div>
+                            <div class="form-group d-md-flex">
+                                <div class="w-100 text-center ">
+                                    <a href="#" class="colorhover">Mot de passe oublié</a>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="text-center">
+            <br/>
+            <span>By <a href="https://github.com/rouret" target="_blank">Lucas Rouret</a> and <a
+                    href="https://github.com/tanguymossion" target="_blank">Tanguy Mossion</a></span>
         </div>
     </div>
-    <canvas id="app"></canvas>
-    <script src="public/index.js"></script>
+</section>
+
+<canvas id="app"></canvas>
+<script src="public/index.js"></script>
 </body>
 
 </html>
