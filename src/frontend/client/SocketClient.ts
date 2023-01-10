@@ -31,6 +31,10 @@ export class SocketClient{
     listOfTask = Array<TaskEvent>();
 
     constructor() {
+
+    }
+
+    connectIo(){
         this.socket = io();
     }
 

@@ -12,7 +12,7 @@ export class User extends CustomBaseEntity {
 
     @Property()
     username!: string;
-    @Property()
+    @Property({hidden: true})
     password!: string;
     @Property({ type: DateTimeType })
     lastLogin!: Date;
