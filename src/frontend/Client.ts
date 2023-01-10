@@ -1,19 +1,12 @@
 import {io,Socket} from "socket.io-client";
 
 export default class Client{
-    socket: Socket;
     elApp = document.getElementById("app");
     elSignIn = document.getElementById("signin");
     elSignUp = document.getElementById("signup");
     elLoading = document.getElementById("loading");
 
 
-    constructor() {
-        this._startLoading()
-        this.socket = io();
-        this._initSocket();
-
-    }
 
      private _startSignIn(){
         document.getElementById("launch-signup")
@@ -26,29 +19,7 @@ export default class Client{
                 const username = (document.getElementById("signin-username") as HTMLInputElement).value;
                 const password = (document.getElementById("signin-password") as HTMLInputElement).value;
 
-                if(!username || !password){
-                    alert("Please enter a username and password");
-                    return;
-                }
-                fetch(process.env.API_URL + "/auth/signin", {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
-                    body: JSON.stringify({
-                        username,
-                        password
-                    })
-                }).then((res) => {
-                    if(res.status === 200){
-                        this._startApp();
-                    }else{
-                        alert("Invalid username or password");
-                    }
-                }).catch((err) => {
-                    console.error(err);
-                    alert("Invalid username or password");
-                })
+
             })
 
          this.elSignIn.style.display = "flex";
@@ -68,30 +39,7 @@ export default class Client{
                 const username = (document.getElementById("signup-username") as HTMLInputElement).value;
                 const password = (document.getElementById("signup-password") as HTMLInputElement).value;
 
-                if(!username || !password){
-                    alert("Please enter a username and password");
-                    return;
-                }
-                fetch(process.env.API_URL+"/auth/signup", {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
-                    body: JSON.stringify({
-                        username,
-                        password
-                    })
-                }).then((res) => {
-                    if(res.status === 201){
-                        alert("Completed. Please sign in");
-                        this._startSignIn();
-                    }else{
-                        alert("Unknown error");
-                    }
-                }).catch((err) => {
-                    console.error(err);
-                    alert("Unknown error");
-                })
+
             })
         this.elSignUp.style.display = "flex";
         this.elSignIn.style.display = "none";
@@ -115,7 +63,7 @@ export default class Client{
     }
 
     private _initSocket(){
-        this.socket.on("connect_error", (err) => {
+       /* this.socket.on("connect_error", (err) => {
             console.error(err);
             this._startSignIn();
         })
@@ -125,6 +73,6 @@ export default class Client{
             this.socket.on("welcome", (messageFromServer) => {
                 console.log(messageFromServer.message);
             });
-        })
+        })*/
     }
 }
