@@ -8,6 +8,7 @@ import {Session} from "../entities/Session";
 import DbManager from "./DbManager";
 import bcrypt from 'bcrypt';
 import {User} from "../entities/User";
+import SessionManager from "./SessionManager";
 
 export default class ApiManager implements IManager {
     public app: express.Application;
@@ -40,6 +41,11 @@ export default class ApiManager implements IManager {
             return
         }
         try{
+            if(SessionManager.instance.isSessionExistAndValid(sessionToken)){
+                next()
+                return
+            }
+
             const session = await DbManager.instance.em()
                 .findOne(Session, { uuid: sessionToken })
 
@@ -180,9 +186,11 @@ export default class ApiManager implements IManager {
                 return
             }
             //Session
+
             const session = await DbManager.instance.em().findOne(Session, { user });
             if(session) {
                 try{
+                    SessionManager.instance.removeSession(session)
                     await DbManager.instance.em().removeAndFlush(session)
                 } catch (error) {
                     GameServer.instance.log(error, "error");
@@ -195,6 +203,7 @@ export default class ApiManager implements IManager {
             }
 
             const newSession = new Session(user)
+            SessionManager.instance.addSession(newSession)
             await DbManager.instance.em().persistAndFlush(newSession);
 
             user.updateLastLogin();
