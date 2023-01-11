@@ -5,8 +5,9 @@
     "main": "main.js",
     "scripts": {
         "start:dev": "webpack --watch && ts-node src/backend/bootstrap.ts ",
-        "start:prod": "npm run build:server && node build/index.js",
+        "start:prod": "npm run build:server && npm run build:client && node build/backend/bootstrap.js",
         "build:server": "rimraf ./build && tsc",
+        "build:client": "rimraf ./dist && webpack",
         "lint": "eslint . --ext .ts",
         "test": "jest"
     },

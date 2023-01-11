@@ -21,5 +21,4 @@ jobs:
             cd /srv/Palm
             git pull origin master
             npm install
-            npm run build:server
             pm2 restart Palm
