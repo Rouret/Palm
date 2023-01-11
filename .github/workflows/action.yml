@@ -17,9 +17,9 @@ jobs:
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.KEY }}
           port: ${{ secrets.PORT }}
-          script:
-            - cd /srv/Palm
-            - git pull origin master
-            - npm install
-            - npm run build:server
-            - pm2 restart Palm
+          run: |
+            cd /srv/Palm
+            git pull origin master
+            npm install
+            npm run build:server
+            pm2 restart Palm
