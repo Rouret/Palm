@@ -1,19 +1,25 @@
 import {Asset, AssetName} from "../gui/Asset";
 import PalmClient from "../PalmClient";
+import IManager from "./IManager";
 
-export default class AssetManager {
+export default class AssetManager implements IManager<Asset> {
     assets : Array<Asset> = [];
 
-    public registerAssets(){
+    add(object: Asset): void {
+        object.url = process.env.API_URL + "/public/assets/" + object.url;
+        this.assets.push(object);
+    }
+
+    get(objId: string): Asset {
+        return this.assets.find(asset => asset.id === objId);
+    }
+
+    register(): void {
         PalmClient.log("Registering assets");
         // example: this.addAsset(AssetName.ICON, "icon.png");
     }
 
-    public addAsset(name: AssetName, endOfUrl : string){
-        this.assets.push(new Asset(name, process.env.API_URL + "/public/assets/" + endOfUrl));
-    }
-
-    public getAsset(name: AssetName){
-        return this.assets.find(asset => asset.name === name);
+    remove(object: Asset): void {
+        this.assets = this.assets.filter(asset => asset.id !== object.id);
     }
 }
