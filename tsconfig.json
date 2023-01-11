@@ -1,11 +1,12 @@
 {
     "compilerOptions": {
+      "rootDir": "src",
       "target": "es6",
       "module": "CommonJS",
       "noImplicitAny": false,
       "removeComments": true,
       "preserveConstEnums": true,
-      "outDir": "node_modules/out",
+      "outDir": "build",
       "esModuleInterop": true,
       "sourceMap": true,
       "moduleResolution": "node",
@@ -13,5 +14,5 @@
       "emitDecoratorMetadata": true
     },
     "include": ["src/**/*"],
-    "exclude": ["node_modules", "**/*.spec.ts"]
+    "exclude": ["node_modules", "**/*.spec.ts","src/frontend"],
   }

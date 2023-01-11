@@ -13,7 +13,7 @@ export default class CanvasGUI implements GUI {
     }
 
     open(accept: () => void, reject: () => void): void {
-        this.assetManager.registerAssets();
+        this.assetManager.register();
     }
 
 }

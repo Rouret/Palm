@@ -3,4 +3,4 @@ dist/
 .idea/
 .vscode/
 build/
-coverage/
+.env

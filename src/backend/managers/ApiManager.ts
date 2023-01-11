@@ -24,7 +24,7 @@ export default class ApiManager implements IManager {
     constructor() {
         this.app = express();
         this.server = http.createServer(this.app);
-        this.port = 3000;
+        this.port = parseInt(process.env.APP_PORT) || 3000;
     }
 
     async checkSession(req: Request, res: Response, next: NextFunction) {
