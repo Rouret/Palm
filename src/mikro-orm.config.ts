@@ -7,8 +7,6 @@ import {Session} from "./backend/entities/Session";
 
 const config: Options = {
     entities: [User, Player, PlayerStat, Tile, Session], // no need for `entitiesTs` this way
-    //lauch update
-
 };
 
 export default config;
