@@ -2,7 +2,7 @@ import GUI from "./GUI";
 import PalmClient from "../PalmClient";
 
 export default class WebGUI implements GUI {
-    appCanvasEl = document.getElementById("app");
+    appCanvasEl = document.getElementById("app-container");
     signInSectionEl = document.getElementById("signin");
     signUpSectionEl = document.getElementById("signup");
     buttonGoToSignUp = document.getElementById("launch-signup")
@@ -22,6 +22,12 @@ export default class WebGUI implements GUI {
         this.signUpSectionEl.style.display = "block";
     }
 
+    startApp(): void {
+        this.signInSectionEl.style.display = "none";
+        this.signUpSectionEl.style.display = "none";
+        this.appCanvasEl.style.display  = "block";
+    }
+
     close(): void {
         //remove all listener
         this.buttonGotoSignIn.removeEventListener("click", () => {});
@@ -29,9 +35,7 @@ export default class WebGUI implements GUI {
         this.buttonSignUp.removeEventListener('click', () => {});
         this.buttonSignIn.removeEventListener('click', () => {});
 
-        this.signUpSectionEl.style.display = "none";
-        this.signInSectionEl.style.display = "none";
-        this.appCanvasEl.style.display  = "block";
+        this.startApp();
     }
 
     open(accept: () => void, reject: () => void): void {

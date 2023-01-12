@@ -1,8 +1,7 @@
 import {Asset, AssetName} from "../gui/Asset";
 import PalmClient from "../PalmClient";
-import IManager from "./IManager";
 
-export default class AssetManager implements IManager<Asset> {
+export default class AssetManager{
     assets : Array<Asset> = [];
 
     add(object: Asset): void {
@@ -10,8 +9,9 @@ export default class AssetManager implements IManager<Asset> {
         this.assets.push(object);
     }
 
-    get(objId: string): Asset {
-        return this.assets.find(asset => asset.id === objId);
+    get(assetName: AssetName): Asset {
+        //cast to AssetName
+        return this.assets.find(asset => asset.name === assetName);
     }
 
     register(): void {

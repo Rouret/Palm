@@ -7,6 +7,8 @@ export default class PalmClient {
 
     public static instance: PalmClient;
 
+    public static FPS = 60;
+
     httpClient : HTTPClient;
     socketClient: SocketClient;
     webGUI : WebGUI;
@@ -26,10 +28,11 @@ export default class PalmClient {
 
     async start(){
         if(await this._isSignIn()){
+            this.webGUI.startApp();
             this.canvasGUI.open(() => {}, () => {});
         }else{
             this.webGUI.open(() => {
-                this.webGUI.close();
+                this.webGUI.close(); //Dans le close on lance l'app
                 this.canvasGUI.open(() => {}, () => {});
             }, () => {
                 location.reload();
