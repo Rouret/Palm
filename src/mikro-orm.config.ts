@@ -1,12 +1,12 @@
 import {User} from "./backend/entities/User";
-import {Player} from "./backend/entities/Player";
+import {Character} from "./backend/entities/Character";
 import {Tile} from "./backend/entities/Tile";
-import {PlayerStat} from "./backend/entities/PlayerStat";
+import {CharacterStat} from "./backend/entities/CharacterStat";
 import {Options} from "@mikro-orm/postgresql";
 import {Session} from "./backend/entities/Session";
 
 const config: Options = {
-    entities: [User, Player, PlayerStat, Tile, Session], // no need for `entitiesTs` this way
+    entities: [User, Character, CharacterStat, Tile, Session], // no need for `entitiesTs` this way
 };
 
 export default config;

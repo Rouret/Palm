@@ -2,6 +2,8 @@ import ApiManager from "./managers/ApiManager";
 import SocketManager from "./managers/SocketManager";
 import DbManager from "./managers/DbManager";
 import {Logger} from "log4js";
+import {Session} from "./entities/Session";
+import SessionManager from "./managers/SessionManager";
 
 
 export default class GameServer{
@@ -10,12 +12,15 @@ export default class GameServer{
 	io: SocketManager;
     db : DbManager;
     logger: Logger;
+    session: SessionManager;
+
 
     constructor(logger: Logger) {
         this.logger = logger;
         this.api = new ApiManager();
         this.io = new SocketManager(this.api.server);
         this.db = new DbManager()
+        this.session = new SessionManager()
         GameServer.instance = this;
     }
 

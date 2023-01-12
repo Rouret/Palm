@@ -1,5 +1,8 @@
 - [ ] V0.0.1
-    - [x] Add ionic to project
+    - ~~Add ionic to project~~
     - [x] Add Database
-    - [ ] testing
-    - [ ] Login / register
+    - [x] Testing
+    - [x] Login / register
+    - [ ] Client structure
+    - [x] Map editor software
+  

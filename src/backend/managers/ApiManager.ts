@@ -8,6 +8,7 @@ import {Session} from "../entities/Session";
 import DbManager from "./DbManager";
 import bcrypt from 'bcrypt';
 import {User} from "../entities/User";
+import SessionManager from "./SessionManager";
 
 export default class ApiManager implements IManager {
     public app: express.Application;
@@ -26,47 +27,53 @@ export default class ApiManager implements IManager {
         this.port = parseInt(process.env.APP_PORT) || 3000;
     }
 
-    checkSession(req: Request, res: Response, next: NextFunction) {
+    async checkSession(req: Request, res: Response, next: NextFunction) {
         if (ApiManager.PUBLIC_ROUTES.includes(req.path) || req.path.includes("/public")) {
             next()
             return
         }
         const sessionToken = req.cookies.palm_session;
         if (!sessionToken) {
-            next();
-            return;
+            res
+                .status(401)
+                .json({ message: "Unauthorized, no token." })
+                .end()
+            return
         }
-        DbManager.instance.em()
-            .findOne(Session, { uuid: sessionToken } )
-            .then((session) => {
+        try{
+            if(SessionManager.instance.isSessionExistAndValid(sessionToken)){
+                next()
+                return
+            }
+
+            const session = await DbManager.instance.em()
+                .findOne(Session, { uuid: sessionToken })
+
             if (!session) {
                 res
                     .status(401)
-                    .json({ message: "Invalid session" })
+                    .json({ message: "Unauthorized, no session found." })
                     .end()
                 return
             }
 
             if(session.expiresAt < new Date()) {
-                DbManager.instance.em().removeAndFlush(session)
-                    .catch(error => {
-                        GameServer.instance.log(error, "error");
-                    })
+                await DbManager.instance.em().removeAndFlush(session)
                 res
-                    .status(440)
+                    .status(401)
                     .json({ message: "Session expired" })
                     .end()
                 return
             }
             next()
-        }).catch(error => {
+            return
+        }catch (error) {
             GameServer.instance.log(error, "error");
             res
                 .status(500)
-                .json({ error: error.message })
-                .end()
-        })
-
+                .json(error);
+            return
+        }
     }
 
     start(): void {
@@ -80,9 +87,8 @@ export default class ApiManager implements IManager {
         this.app.get("/", (req, res) => {
             res.sendFile("index.html", { root: this.publicFolder });
         });
-        this.app.get("/test", (req, res) => {
-            res.send("Hello world!");
-        });
+
+        this.app.get("/user", this._getCurrentUser);
         this.app.post("/auth/signup", this._signUp);
         this.app.post("/auth/signin", this._signIn);
 
@@ -94,50 +100,80 @@ export default class ApiManager implements IManager {
         this.server.close();
     }
 
-    private _signUp(req: Request, res: Response) {
-        const { username, password } = req.body
-        //Check if user and password are provided
-        if (!username || !password) {
+    private async _getCurrentUser(req: Request, res: Response){
+        const sessionToken = req.cookies.palm_session;
+        try{
+            const session = await DbManager.instance.em()
+                .findOne(Session, { uuid: sessionToken } )
             res
-                .status(400)
-                .json({ message: "Username and password are required" })
+                .json(session.user)
+                .status(200);
+            return
+        }catch (error) {
+            GameServer.instance.log(error, "error");
+            res
+                .status(500)
+                .json({ error: error.message })
                 .end()
             return
         }
-        DbManager.instance.em().findOne(User, { username }).then(user => {
+    }
+
+    private async _signUp(req: Request, res: Response) {
+        const {username, email, password} = req.body
+        //Check if user and password are provided
+        if (!username || !email || !password) {
+            res
+                .status(400)
+                .json({message: "Username, email and password are required"})
+                .end()
+            return
+        }
+        try {
+            const user = await DbManager.instance.em().findOne(User, { $or: [{ username }, { email }] });
             //User already exists
             if (user) {
                 res
                     .status(409)
-                    .json({ message: "Username already taken" })
+                    .json({message: "Username already taken"})
                     .end()
                 return
             }
             //Create user
-            const newUser = new User(username,bcrypt.hashSync(password, 10));
-            DbManager.instance.em().persistAndFlush(newUser).then(() => {
-                res
-                    .status(201)
-                    .json({ message: "User created" })
-                    .end()
-            }).catch(error => {
-                GameServer.instance.log(error, "error");
-                res
-                    .status(500)
-                    .json({ error: error.message })
-                    .end()
-            });
-        })
+            const newUser = new User(email, username, bcrypt.hashSync(password, 10));
+            await DbManager.instance.em().persistAndFlush(newUser)
+            res
+                .status(201)
+                .json({message: "User created"})
+                .end()
+            return
+        } catch(error){
+            GameServer.instance.log(error, "error");
+            res
+                .status(500)
+                .json({error: error.message})
+                .end()
+            return
+        }
     }
 
-    private _signIn(req: Request, res: Response) {
-        const { username, password } = req.body
-        DbManager.instance.em().findOne(User, { username }).then(user => {
-            //User not found
+    private async _signIn(req: Request, res: Response) {
+        const { email, password } = req.body
+
+        if (!email || !password) {
+            res
+                .status(400)
+                .json({message: "Username and password are required"})
+                .end()
+            return
+        }
+        try {
+            const user = await DbManager.instance.em().findOne(User, { email });
+
             if (!user) {
                 res
                     .status(401)
-                    .json({ message: "Invalid username or password" })
+                    .json({ message: "Invalid email or password" })
                     .end()
                 return
             }
@@ -145,39 +181,46 @@ export default class ApiManager implements IManager {
             if (!bcrypt.compareSync(password, user.password)) {
                 res
                     .status(401)
-                    .json({ message: "Invalid username or password" })
+                    .json({ message: "Invalid email or password" })
                     .end()
                 return
             }
             //Session
-            DbManager.instance.em().findOne(Session, { user }).then(session => {
-                if(session) {
-                    DbManager.instance.em().removeAndFlush(session)
-                        .catch(error => {
-                            GameServer.instance.log(error, "error");
-                            res
-                                .status(500)
-                                .json({error: error.message})
-                                .end()
-                        })
-                }
-                const newSession = new Session(user);
-                DbManager.instance.em().persistAndFlush(newSession).then(() => {
+
+            const session = await DbManager.instance.em().findOne(Session, { user });
+            if(session) {
+                try{
+                    SessionManager.instance.removeSession(session)
+                    await DbManager.instance.em().removeAndFlush(session)
+                } catch (error) {
+                    GameServer.instance.log(error, "error");
                     res
-                        .cookie(Session.COOKIE_NAME, newSession.uuid)
-                        .status(200)
-                        .json({ message: "User logged in" })
+                        .status(500)
+                        .json({error: error.message})
                         .end()
-                })
+                    return
+                }
+            }
 
-            })
+            const newSession = new Session(user)
+            SessionManager.instance.addSession(newSession)
+            await DbManager.instance.em().persistAndFlush(newSession);
 
+            user.updateLastLogin();
 
-        }).catch(error => {
+            await DbManager.instance.em().persistAndFlush(user);
+
+            res
+                .cookie(Session.COOKIE_NAME, newSession.uuid)
+                .status(200)
+                .json({ message: "User logged in" })
+                .end()
+
+        } catch (error) {
             res
                 .status(500)
-                .json({ error: error.message })
+                .json({ error: error })
                 .end()
-        });
+        }
     }
 }

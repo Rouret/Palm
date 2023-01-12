@@ -39,7 +39,7 @@ html{
     -webkit-tap-highlight-color:transparent
 }
 section{
-    display:block
+    display:none;
 }
 body{
     margin:0;
@@ -1649,4 +1649,10 @@ img{
     position:absolute;
     top:30%;
     left:40%
+}
+canvas{
+    position:absolute;
+    top:0;
+    left:0;
+    z-index:-1;
 }

@@ -1,4 +1,5 @@
-import Client from "./Client";
 
-new Client();
+import PalmClient from "./PalmClient";
 
+const client = new PalmClient();
+client.start();

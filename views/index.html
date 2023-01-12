@@ -35,9 +35,9 @@
                         </div>
                         <form action="#" class="signin-form">
                             <div class="form-group mb-3">
-                                <label class="label" for="signin-username">Nom de compte</label>
-                                <input type="text" autocomplete="off" id="signin-username" class="form-control"
-                                       placeholder="Nom de compte" required>
+                                <label class="label" for="signin-email">Email</label>
+                                <input type="text" autocomplete="off" id="signin-email" class="form-control"
+                                       placeholder="Email" required>
                             </div>
                             <div class="form-group mb-3">
                                 <label class="label" for="signin-password">Mot de passe</label>
@@ -126,14 +126,11 @@
         </div>
     </div>
 </section>
+<section id="app-container">
+    <canvas id="static-app"></canvas>
+    <canvas id="app"></canvas>
+</section>
 
-<div id="loading">
-    <div class="box center">
-        <img alt="logo" class="mb-2" height="160" src="public/assets/logo.png" width="160">
-        <h1>Loading ...</h1>
-    </div>
-</div>
-<canvas id="app"></canvas>
 <script src="public/index.js"></script>
 </body>
 
